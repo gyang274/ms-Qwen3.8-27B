@@ -1,0 +1,19 @@
+06:02:44 == dp2-sticky
+06:10:21 dp2-sticky: 4 agents
+06:17:28 dp2-sticky: 8 agents
+06:24:17 dp2-sticky: 12 agents
+06:32:02 dp2-sticky: 16 agents
+06:40:00 dp2-sticky: done
+06:40:00 == dp2-sticky finished in 2236 s
+06:40:00 == dp2-tuned
+06:47:26 dp2-tuned: 4 agents
+06:53:36 dp2-tuned: 8 agents
+07:00:35 dp2-tuned: 12 agents
+07:07:50 dp2-tuned: 16 agents
+07:15:57 dp2-tuned: done
+07:15:57 == dp2-tuned finished in 2157 s
+07:15:57 == tp2-1m-kv
+{"target_tokens": 131072, "needles": 8, "ok": true, "prompt_tokens": 129857, "seconds": 181.46105432510376, "hits": 8, "by_depth": [true, true, true, true, true, true, true, true]}
+{"target_tokens": 800000, "needles": 8, "ok": true, "prompt_tokens": 837306, "seconds": 2093.9331476688385, "hits": 8, "by_depth": [true, true, true, true, true, true, true, true]}
+{"target_tokens": 990000, "needles": 8, "ok": true, "prompt_tokens": 992199, "seconds": 2724.587344646454, "hits": 8, "by_depth": [true, true, true, true, true, true, true, true]}
+08:47:29 == tp2-1m-kv finished in 5492 s

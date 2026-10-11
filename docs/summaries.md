@@ -2,7 +2,7 @@
 
 ## One line (project card)
 
-Serving Qwen3.8-27B on one RTX A6000: FP8 on Ampere, a byte-verified abliterated FP8 quant, and a 10-hour soak test.
+Serving Qwen3.8-27B on RTX A6000s: FP8 on Ampere, a byte-verified abliterated FP8 quant, a 10-hour soak test, and coding-agent capacity from one to two GPUs and 1M context.
 
 ## Short post (LinkedIn)
 
@@ -21,6 +21,12 @@ What it took:
   GSM8K.
 • Proof it holds. A 10-hour mixed soak served 2,617 requests and 1,324 tool calls with zero errors. It also
   caught a subtle bug: the default health check kept waking the idle GPU, which pinned it at 73 W instead of 7 W.
+• A second card, measured the way coding agents use it. Agent turns read far more than they write, so capacity
+  follows the KV cache, not decode speed: one card serves about four busy agents before its 250K-token cache
+  overflows. On two cards, data parallelism with a tuned router is best up to eight agents, pipeline parallelism
+  (974K-token cache) beyond that, and tensor parallelism decodes fastest at 81 tok/s and holds a full
+  1M-token context (8/8 needles found at 992K tokens). Two traps on a consumer board: CUDA reports peer-to-peer
+  access that the AMD IOMMU silently drops, and sglang-router's default settings send every agent to one replica.
 
 Notes, scripts and raw data: github.com/gyang274/ms-Qwen3.8-27B
 Model: huggingface.co/gyang274/Huihui-Qwen3.8-27B-abliterated-FP8

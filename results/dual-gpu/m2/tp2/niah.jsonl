@@ -1,0 +1,5 @@
+{"target_tokens": 131072, "needles": 8, "ok": true, "prompt_tokens": 221245, "seconds": 339.1475100517273, "hits": 8, "by_depth": [true, true, true, true, true, true, true, true], "answer": "Blue Depot: 375704\nCedar Lab: 873342\nGlass Tower: 708885\nHarbor Gate: 728436\nNorth Archive: 413643\nOld Mill: 780824\nSalt Market: 183600\nSignal Hill: 559623"}
+{"target_tokens": 262144, "needles": 8, "ok": false, "error": "HTTPError: HTTP Error 400: Bad Request", "seconds": 0.8080534934997559}
+{"target_tokens": 524288, "needles": 8, "ok": false, "error": "HTTPError: HTTP Error 400: Bad Request", "seconds": 1.7976133823394775}
+{"target_tokens": 800000, "needles": 8, "ok": false, "error": "HTTPError: HTTP Error 400: Bad Request", "seconds": 2.920316696166992}
+{"target_tokens": 990000, "needles": 8, "ok": false, "error": "HTTPError: HTTP Error 400: Bad Request", "seconds": 3.460521697998047}

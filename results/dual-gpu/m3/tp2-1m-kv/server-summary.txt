@@ -1,0 +1,3 @@
+Engine startup timings (s): load_weight=8.72, kv_cache_allocation=0.60, scheduler_e2e=265.15, cuda_graph={prefill=234.71, decode=0.00, target_verify=2.38, draft_prefill=4.94, draft_decode=1.18, draft_extend=0.84}, tokenizer_e2e=272.22
+max_running_requests is capped to 6 by the mamba state cache (max_mamba_cache_size=32, 5 state slots per request). To raise it: increase --mamba-full-memory-ratio or --max-mamba-cache-size, or halve the state size with --mamba-ssm-dtype bfloat16.
+max_total_num_tokens=1330719, chunked_prefill_size=8192, max_prefill_tokens=16384, max_running_requests=6, context_len=1000000, available_gpu_mem=2.65 GB

@@ -30,6 +30,7 @@ ACCENT, ACCENT_SOFT, ACCENT_FAINT = BLUE, "#9bc2db", "#e0edf6"
 HIGHLIGHT, HIGHLIGHT_SOFT = GOLD, "#d1b895"
 CONTRAST = GOLD
 NEUTRAL, CELL, CELL_FAINT = "#bfbbb7", "#eeeae5", "#f6f3ef"
+CAT = ["#a4772e", "#03628b", "#8f77bd", "#0d8b74", "#853e24", "#7a9c55", "#7f3a5d"]  # categorical, fixed order
 
 FONT = next((f for f in ("Inter", "Noto Sans") if any(f == x.name for x in font_manager.fontManager.ttflist)), "DejaVu Sans")
 plt.rcParams.update({
@@ -316,9 +317,65 @@ def fig_abliteration_svd():
     save(fig, "abliteration-svd.png")
 
 
+# --------------------------------------------------------------------------- two GPUs: agent capacity
+
+def agent_rows(path):
+    """Per-level summary of an agent_bench.py requests.jsonl (same definitions as agent_report.py)."""
+    by = defaultdict(list)
+    for line in open(path):
+        r = json.loads(line)
+        if r["ok"]:
+            by[r["level"]].append(r)
+    out = {}
+    for n, rs in sorted(by.items()):
+        prompt = sum(r.get("prompt_tokens", 0) for r in rs)
+        ttft = sorted(r["ttft"] for r in rs)
+        out[n] = {"turns": len(rs) / n / 5, "ttft90": ttft[min(len(ttft) - 1, int(0.9 * len(ttft)))],
+                  "cache": 100 * sum(r.get("cached_tokens", 0) for r in rs) / prompt}
+    return out
+
+
+def fig_agent_capacity():
+    d = RES / "dual-gpu"
+    series = [("1 GPU", d / "m1/single/requests.jsonl", CAT[0], "-"),
+              ("DP=2, tuned router", d / "m3/dp2-tuned/requests.jsonl", CAT[1], "-"),
+              ("TP=2", d / "m1/tp2/requests.jsonl", CAT[2], "-"),
+              ("PP=2 (no MTP)", d / "m1/pp2/requests.jsonl", CAT[3], "-"),
+              ("DP=2, default router", d / "m2/dp2/requests.jsonl", CAT[4], (0, (2, 2)))]
+    data = [(name, agent_rows(path), color, ls) for name, path, color, ls in series]
+    fig, axes = plt.subplots(1, 3, figsize=(13, 5.4), gridspec_kw={"wspace": 0.3})
+    fig.subplots_adjust(left=0.045, right=0.985, top=0.69, bottom=0.15)
+    header(fig, "Coding agents are prefill-bound: capacity follows the KV pool and the router",
+           "Closed-loop coding agents (shared 9K prompt, ~3K new tokens per turn, contexts 40-80K) on one or two RTX A6000s.")
+    panels = [("turns", "Agent progress", "turns per agent per minute", False),
+              ("ttft90", "Time to first token", "p90 seconds, log scale", True),
+              ("cache", "Prefix-cache hit", "% of prompt tokens served from cache", False)]
+    for ax, (key, title, sub, log) in zip(axes, panels):
+        for name, rows, color, ls in data:
+            xs = sorted(rows)
+            ys = [rows[x][key] for x in xs]
+            ax.plot(xs, ys, color=color, linestyle=ls, zorder=3, label=name)
+            ax.scatter(xs, ys, s=38, color=color, edgecolor=SURFACE, linewidth=1.8, zorder=4)
+        if log:
+            ax.set_yscale("log")
+            ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda y, _: f"{y:g}"))
+        if key == "cache":
+            ax.set_ylim(0, 100)
+            ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda y, _: f"{y:g}%"))
+        ax.set_xticks([1, 2, 4, 8, 12, 16])
+        ax.set_xlabel("concurrent agents")
+        panel_title(ax, title, sub)
+    fig.legend(*axes[0].get_legend_handles_labels(), loc="upper left", bbox_to_anchor=(0.008, 0.865), ncol=5,
+               fontsize=9.5, handlelength=2.2, columnspacing=1.8, labelcolor=INK2)
+    footer(fig, "Data: results/dual-gpu/ · Qwen3.8-27B-FP8, SGLang v0.5.21, FP8 KV · 5 min scored per level after 1 min warm-up · "
+                "KV pool: 1 GPU 250K, DP=2 2x250K, TP=2 821K, PP=2 974K tokens")
+    save(fig, "agent-capacity.png")
+
+
 if __name__ == "__main__":
     fig_power_cooling()
     fig_soak()
     fig_recipe()
     fig_abliteration_map()
     fig_abliteration_svd()
+    fig_agent_capacity()

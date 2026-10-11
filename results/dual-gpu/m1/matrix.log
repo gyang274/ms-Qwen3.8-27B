@@ -1,0 +1,35 @@
+00:58:32 == tp2
+01:03:44 tp2: 1 agents
+01:09:44 tp2: 2 agents
+01:15:52 tp2: 4 agents
+01:22:06 tp2: 8 agents
+01:28:36 tp2: 12 agents
+01:35:07 tp2: 16 agents
+01:41:38 tp2: done
+01:41:38 == tp2 finished in 2586 s
+01:41:38 == single
+01:49:29 single: 1 agents
+01:55:35 single: 2 agents
+02:01:38 single: 4 agents
+02:07:47 single: 6 agents
+02:15:29 single: 8 agents
+02:23:22 single: done
+02:23:22 == single finished in 2504 s
+02:23:22 == dp2
+02:30:49 dp2: 1 agents
+02:36:55 dp2: 2 agents
+02:42:59 dp2: 4 agents
+02:49:15 dp2: 8 agents
+02:57:17 dp2: 12 agents
+03:05:06 dp2: 16 agents
+03:13:52 dp2: done
+03:13:52 == dp2 finished in 3030 s
+03:13:52 == pp2
+03:20:18 pp2: 1 agents
+03:26:19 pp2: 2 agents
+03:32:22 pp2: 4 agents
+03:38:48 pp2: 8 agents
+03:45:06 pp2: 12 agents
+03:51:27 pp2: 16 agents
+03:57:55 pp2: done
+03:57:55 == pp2 finished in 2643 s

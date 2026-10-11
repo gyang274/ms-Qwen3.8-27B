@@ -1,11 +1,14 @@
-# Serving Qwen3.8-27B on one RTX A6000: FP8 on Ampere, a verified abliterated quant, and a 10-hour soak
+# Serving Qwen3.8-27B on RTX A6000s: FP8 on Ampere, a verified abliterated quant, a 10-hour soak, and two-GPU agent capacity
 
 These are the engineering notes behind a single-GPU home LLM server: one user, many sessions, serving a home
 robot and coding agents. The hardware is a five-year-old 48 GB Ampere workstation card. Most published Qwen3.8
 recipes target Hopper or Blackwell. These notes cover what changes on `sm_86`, how the memory budget was tuned
 to fit the native 262K context, how power, clocks, temperature and fan speed were balanced, how Qwen's own FP8
 recipe was reproduced byte for byte, what an abliteration edit looks like inside the weights, and how a mixed
-10-hour soak test was designed and what it found.
+10-hour soak test was designed and what it found. A final section adds a second A6000 and measures what it
+buys coding agents: data, tensor and pipeline parallelism over a consumer PCIe board, a peer-to-peer failure
+that no tool reports, an agent-capacity benchmark, router settings that make or break data parallelism, and a
+full 1M-token context.
 
 The FP8 abliterated model produced here is published at
 [huggingface.co/gyang274/Huihui-Qwen3.8-27B-abliterated-FP8](https://huggingface.co/gyang274/Huihui-Qwen3.8-27B-abliterated-FP8).
@@ -25,6 +28,9 @@ The FP8 abliterated model produced here is published at
 | Abliteration | Exactly 70 tensors differ: the residual-stream writers of layers 17-51. Every edit is ΔW = −1.3 · r rᵀW with **one shared direction r** |
 | Cost of abliteration | HumanEval 98.2% -> 95.7%, GSM8K-200 97.5% -> 94.5%, over-refusals 2/15 -> 0/15, same speed |
 | Soak | 10 h mixed workload, 2,617 requests, 0 errors, 1,324 tool calls with 0 malformed, no restarts, no Xid/OOM. It also exposed an idle-power bug (a generating health check pinned the GPU in P2 at 73 W), which was root-caused and fixed |
+| Second GPU: the link | Riser slot is chipset PCIe 3.0 x4 (2.7 GiB/s). CUDA reports peer-to-peer access, but the AMD IOMMU silently drops every peer write: NCCL hangs and copies return zeros. Fix: `NCCL_P2P_DISABLE=1` and `--disable-custom-all-reduce` |
+| Second GPU: agents | Coding agents are prefill-bound. One card falls off a cliff at ~8 agents when its 250K-token KV pool overflows. DP=2 with a tuned router is best at 4-8 agents (2.8 turns/agent/min at 8); PP=2 (974K-token pool) is best at 12-16; TP=2 decodes fastest (81 tok/s). sglang-router's default settings send every agent to one replica |
+| 1M context | Two cards, TP=2, YaRN factor 4, 32 mamba slots: 1.33M-token KV pool; 8/8 needles found in a 992K-token prompt (45 min prefill) |
 
 ## 1. Goals and constraints
 
@@ -36,15 +42,15 @@ priority order:
 2. **Low idle cost.** It sits idle most of the day, so idle GPU power and idle CPU usage matter.
 3. **Precision.** FP8 is preferred over NVFP4, and BF16 does not fit. Accuracy loss should be measured, not
    assumed.
-4. **Context.** The native 262K window (1M via YaRN is out of reach on 48 GB, see §5).
+4. **Context.** The native 262K window. 1M via YaRN is out of reach on 48 GB (§5) but fits on two cards (§12).
 5. **Speed.** The ideal target was over 100 tok/s, but this is the most negotiable goal.
 
 ## 2. Platform
 
 | Component | Detail |
 |---|---|
-| GPU | NVIDIA RTX A6000, 48 GB GDDR6, GA102 `sm_86`, 768 GB/s, 300 W blower |
-| Host | AMD Ryzen 9 5950X (16C/32T), 128 GB RAM, ASUS ROG STRIX B550-F, GPU on CPU PCIe 4.0 x16 |
+| GPU | NVIDIA RTX A6000, 48 GB GDDR6, GA102 `sm_86`, 768 GB/s, 300 W blower. A second one was added for §12 |
+| Host | AMD Ryzen 9 5950X (16C/32T), 128 GB RAM, ASUS ROG STRIX B550-F, first GPU on CPU PCIe 4.0 x16. Corsair HX1000i PSU |
 | Storage | Samsung 980 PRO 2 TB NVMe for models and container storage |
 | OS | Ubuntu 24.04.4 LTS, HWE kernel 6.17, NVIDIA driver 590.48.01 (open), CUDA 13.1 |
 | Runtime | Docker 29 + NVIDIA Container Toolkit 1.20; image and container storage on the NVMe |
@@ -122,7 +128,7 @@ Two findings drive this:
   mamba slots and 4 concurrent requests.
 
 1M context via YaRN would need about 64 GiB of KV in BF16 or 32 GiB in FP8, on top of 29 GB of weights. It does
-not fit on this card.
+not fit on this card. It does fit on two (§12).
 
 The final launch command is in [serve/compose.yaml](../serve/compose.yaml).
 
@@ -380,7 +386,233 @@ below 2%.
      removes the false negatives of finding 1. Any client that polls a generating endpoint (a dashboard, an
      agent heartbeat) would cause the same 65 W idle penalty, about 570 kWh a year if it ran around the clock.
 
-## 12. Operations
+## 12. A second A6000: what it buys coding agents
+
+A second RTX A6000 was added later, and the official FP8 model was run across both cards to answer the
+question most coding-agent users with two consumer-platform GPUs have: **how many agents can the pair carry,
+and which way of splitting the model is best?** Everything else stayed fixed: SGLang v0.5.21,
+Qwen3.8-27B-FP8, FP8 KV cache, 250 W per card, the fan curve from §7.
+
+### The PCIe reality of a consumer board
+
+The B550 board has one CPU-attached x16 slot. The second full-length slot hangs off the chipset, which
+shares a single PCIe 3.0 x4 uplink with the second NVMe drive, SATA, USB and the network. The second card sits
+on a riser in that slot, mounted vertically in the case's vertical bracket slots, well away from the first
+card's cooler. The cards are not adjacent, so there is no NVLink bridge. The A6000 supports one (112.5 GB/s), but it needs the
+two cards side by side, which would cost the airflow gap; current GeForce and RTX PRO Blackwell cards have
+no NVLink at all.
+
+[scripts/bench/link_bench.py](../scripts/bench/link_bench.py) measures the link
+([results/dual-gpu/link-p2p-off.json](../results/dual-gpu/link-p2p-off.json)):
+
+| | Riser card (chipset, Gen3 x4) | Slot card (CPU, Gen4 x16) |
+|---|---|---|
+| Host to device | 2.7 GiB/s | 23.9 GiB/s |
+| Device to host | 3.0 GiB/s | 24.2 GiB/s |
+
+| NCCL all-reduce, 2 GPUs, via host memory | 10 KiB (one decode token) | 160 KiB | 1 MiB | 80 MiB (one 8K prefill chunk) |
+|---|---|---|---|---|
+| Time | 28 µs | 127 µs | 619 µs | 46 ms |
+| Bus bandwidth | 0.34 GiB/s | 1.2 GiB/s | 1.6 GiB/s | 1.7 GiB/s |
+
+### Peer-to-peer is reported, and silently broken
+
+CUDA reports peer access between the two cards (`can_device_access_peer` is true, and
+`nvidia-smi topo -p2p r` prints `OK`). It does not work. Every peer write is blocked by the AMD IOMMU, which
+runs in translated mode on a stock Ubuntu kernel. The kernel logs `AMD-Vi: Event logged [IO_PAGE_FAULT ...]`
+for both devices, and the destination buffer simply stays zero. No CUDA error is raised. The first symptom was
+an NCCL all-reduce that spun both GPUs at 100% utilization forever, waiting for data that never arrived.
+
+This matters beyond this machine. Any engine that trusts the reported capability can hang or, worse, compute
+with zeros. SGLang assumes peer access works unless `--enable-p2p-check` is given, and its custom all-reduce
+for tensor parallelism uses peer memory. Every two-GPU run here therefore used:
+
+```
+NCCL_P2P_DISABLE=1               # NCCL stages through host shared memory
+--disable-custom-all-reduce      # SGLang's P2P all-reduce stays off
+```
+
+A copy test like the one in `link_bench.py` takes seconds and should be the first thing run on any multi-GPU
+consumer build. Booting with `iommu=pt` (IOMMU passthrough) is the usual way to restore peer access on AMD
+platforms. It was not tested here; through a chipset Gen3 x4 link it could at best halve the all-reduce latency.
+
+### Four ways to use two cards
+
+| | 1 GPU | DP=2 | TP=2 | PP=2 |
+|---|---|---|---|---|
+| What it is | Today's deployment | Two independent replicas behind sglang-router | Every layer split across both cards | Layers 0-31 on one card, 32-63 on the other |
+| KV pool (tokens) | 249,600 | 2 × 249,600, not shared | **820,823** | **973,993** |
+| Max running requests | 4 | 2 × 4 | 29 | 46 |
+| MTP speculative decoding | yes | yes | yes | **no** (SGLang v0.5.21: PP + MTP only on prefill-only nodes) |
+| Startup | 4 min | 4.5 min | 5 min | 1 min (no prefill CUDA graphs) |
+| Decode, 1 stream | 60 tok/s | 60 tok/s | **81 tok/s** | 23 tok/s |
+| Prefill, 49.5K-token prompt | 51 s | 51 s | 62 s | **33 s** |
+| Aggregate decode, 8 / 16 streams | 165 / 197 tok/s | 310 / 320 tok/s | 249 / 344 tok/s | 130 / 217 tok/s |
+
+Notes on the table:
+
+- **The tensor-parallel split pays where the link is cheap and loses where it is not.** Decode moves one
+  10 KiB activation per all-reduce, 128 times per token, which costs about 3.6 ms against roughly 18 ms of
+  weight reads per card. Halving the weights per card wins: 81 tok/s instead of 60. Prefill moves 80 MiB per
+  all-reduce for an 8K chunk, which takes 46 ms over host memory. Prefill gets 20% slower than one card.
+- **Pipeline parallelism barely uses the link.** It sends one 80 MiB activation per chunk, once, at the layer
+  boundary. While card 1 runs chunk *n* through the back half, card 0 runs chunk *n+1* through the front half,
+  so a long prompt prefills 1.5× faster than on one card. Decode has the opposite problem. A single stream
+  waits on both halves in sequence, and without MTP it runs at 23 tok/s.
+- **The KV pool grows 3-4×, not 2×.** One card spends about 29 GB of its 48 GB on weights. Split two ways, each card
+  holds half the weights and half the KV heads (TP) or half the layers (PP), so almost all the extra memory
+  becomes cache.
+- **The slot does not matter for one card.** The same single-GPU benchmark on the Gen4 x16 card gave identical
+  decode (60 tok/s) and prefill (51.4 s). Once weights are resident, a single GPU barely touches PCIe.
+
+### A coding-agent benchmark
+
+Single-stream tokens per second is the wrong metric for coding agents. An agent turn reads far more than it
+writes: each turn appends a tool result (a file, a test log, a diff) and generates a short tool call. The
+benchmark ([scripts/bench/agent_bench.py](../scripts/bench/agent_bench.py)) simulates that loop:
+
+- Every agent shares the same ~9K-token system prompt with six tool definitions, as all sessions of one agent
+  product do. Each session adds its own ~3K-token repository map and task.
+- Each turn the model answers with up to 512 tokens. The client waits 1-3 s ("running the tool") and appends
+  1-4K tokens of tool output. Contexts grow by about 3K tokens per turn.
+- When a session passes 40-80K tokens, the agent starts a new one, as agents do when they compact.
+- N agents run closed-loop for 5 minutes per level after a 1-minute warm-up. Thinking is off; outputs average
+  about 160 tokens per turn.
+
+The headline metric is **turns per agent per minute**: how fast each agent makes progress.
+
+![Agent capacity](../figures/agent-capacity.png)
+
+| Agents | 1 GPU | DP=2 (default router) | TP=2 | TP=2 without MTP | PP=2 (no MTP) |
+|---|---|---|---|---|---|
+| 1 | 6.8 turns/min, TTFT p90 6 s | 7.8, 4.7 s | **8.0**, 4.5 s | - | 7.2, 4.5 s |
+| 4 | 3.5, 15 s | 3.5, 13 s | **3.7**, 13 s | - | 3.3, **9 s** |
+| 8 | 0.8, 97 s (cache hit 47%) | 0.5, 94 s | 2.0, 29 s | 1.4, 27 s | **2.2, 12 s** |
+| 16 | - | 0.4, 181 s | 1.1, 74 s | 0.8, 35 s | **1.4, 18 s** |
+
+What the numbers say:
+
+1. **Agent workloads are prefill-bound.** At saturation the server spends its time reading new tool output,
+   not writing tokens. With TP=2 and PP=2, aggregate new-token prefill reaches 700-1,100 tok/s while aggregate
+   decode stays at 20-40 tok/s. The fastest decoder (TP=2) is not the best agent server.
+2. **The KV pool sets the cliff.** One card holds 250K tokens of context. Four agents at 30-40K each fit; at
+   eight the radix cache starts evicting live sessions, the cache hit rate drops from 91% to 47%, every evicted
+   session re-prefills its whole context, and progress collapses from 3.5 to 0.8 turns per agent per minute.
+   TP=2 and PP=2, with 820K and 974K tokens of cache, keep the hit rate near 90% at 16 agents.
+3. **For a single agent, TP=2 is the most responsive.** It has the fastest decode and the same cache
+   behavior. Up to eight agents, DP=2 with a tuned router does better still (next subsection). Beyond eight
+   agents, **PP=2 carries the most work** (1.4 turns per agent per minute at 16 agents,
+   TTFT p90 18 s) despite having no MTP, because its prefill is the fastest of all.
+4. **MTP still pays at high concurrency.** Speculative decoding is often assumed to stop helping once batches
+   grow. TP=2 without MTP made 29% less progress per agent at 8 agents and 23% less at 16.
+5. **Default data-parallel routing fails for agents.** See below.
+
+### The cache-aware router sends every agent to one card
+
+DP=2 should have doubled the one-card capacity, since each replica handles half the agents. Instead it
+collapsed at eight agents in two separate runs, worse than a single card. The worker logs show why: after
+the first minute, *one* worker received every request and the other sat idle and healthy.
+
+sglang-router's default `cache_aware` policy sends a request to the worker whose cached prefix matches it
+best, and only rebalances when the workers' loads differ by more than `--balance-abs-threshold` (64 requests)
+**and** a 1.5× ratio. Every coding agent's prompt starts with the same system prompt and tool definitions, so
+the worker that has seen more traffic always has the best match, and a handful of agents never comes close to a
+64-request imbalance. The same thing will happen with any agent product, because they all share a long fixed
+prefix across sessions.
+
+Two fixes were tested
+([serve/bench-variant.sh](../serve/bench-variant.sh), variants `dp2-tuned` and `dp2-sticky`):
+
+| Agents | Default `cache_aware` | `cache_aware`, `--balance-abs-threshold 1 --balance-rel-threshold 1.0` | `manual` (sticky `X-SGL-Routing-Key` per session, new keys to the least-loaded worker) |
+|---|---|---|---|
+| 4 | 3.5 turns/min, TTFT p90 13 s | **4.4**, 9 s | 3.1, 27 s |
+| 8 | 0.6, 94 s | **2.8**, 40 s | 1.3, 48 s |
+| 12 | 0.6, 124 s | 1.1, 82 s | 0.8, 114 s |
+| 16 | 0.4, 181 s | 0.7, 94 s | 0.7, 112 s |
+
+- **Lowering the balance thresholds fixes it.** The router still prefers the worker with the best prefix match,
+  but now spreads load as soon as the workers differ by one request. With that change DP=2 was the best
+  configuration of all at 4 and 8 agents: two full prefill engines working in parallel beat one engine split
+  across two cards.
+- **Pure session affinity was worse.** Pinning sessions to workers by load at assignment time leaves the
+  slow-growing contexts unevenly packed, so one replica's 250K pool overflows while the other has room. Its
+  cache hit rate fell to 63% at 8 agents.
+- **Past about 8 agents, every DP setup runs out of cache.** Each replica still has only 250K tokens, and the
+  hit rate falls below 60% at 12 agents. Pooled-memory TP and PP keep scaling.
+
+### 1M tokens of context
+
+The native window is 262,144 tokens. The Qwen model card enables 1M with YaRN (`rope_type: yarn`, factor 4
+over 262,144, passed through `--json-model-override-args`). On one card that was out of reach (§5). Two cards
+change that, with one more adjustment. TP=2's default KV pool, 820K tokens, is too small for a 1M-token request,
+which SGLang rejects with HTTP 400 ("exceeds the maximum allowed length"). The hybrid model's recurrent-state
+cache is the lever. By default SGLang sizes the mamba state cache at about 150 slots (5 per request with MTP),
+roughly 10 GB per card, to allow 29 concurrent requests. `--max-mamba-cache-size 32` keeps 6 concurrent requests and returns that memory to the KV
+pool, which grows to **1,330,719 tokens**.
+
+Retrieval was tested with eight needles at evenly spaced depths in a synthetic logbook, all eight requested in
+one question ([scripts/bench/niah.py](../scripts/bench/niah.py), temperature 0):
+
+| Prompt (tokens) | Configuration | Needles found | Prefill time |
+|---|---|---|---|
+| 129,857 | TP=2, YaRN 1M, 32 mamba slots | 8 / 8 | 3 min |
+| 221,245 | TP=2, native 262K | 8 / 8 | 5.7 min |
+| 221,245 | TP=2, YaRN 1M | 8 / 8 | 5.7 min |
+| 264,515 | TP=2, YaRN 1M | 8 / 8 | 7 min |
+| 535,739 | TP=2, YaRN 1M | 8 / 8 | 18 min |
+| 837,306 | TP=2, YaRN 1M, 32 mamba slots | 8 / 8 | 35 min |
+| **992,199** | TP=2, YaRN 1M, 32 mamba slots | **8 / 8** | **45 min** |
+
+So two A6000s do run Qwen3.8-27B at a full million tokens, in FP8 with an FP8 KV cache, and find all eight
+facts at every depth. Prefill time is the practical limit: about 370 tok/s on average at 1M, as attention cost
+grows with length. A million-token prompt is a batch job, not an interactive one, although follow-up
+questions on the same prefix are served from the radix cache (§6). Decode speed with YaRN was unchanged (81 tok/s). This test checks
+retrieval only, not reasoning over the whole context.
+
+### Power and thermals with two cards
+
+| Configuration (agent benchmark) | Riser card max | Slot card max |
+|---|---|---|
+| 1 GPU loaded | 74 °C, 75% fan | idle |
+| PP=2, both loaded | 72 °C, 70% fan | 72 °C, 68% fan |
+| TP=2, both loaded | 73 °C, 72% fan | 72 °C, 72% fan |
+
+- **The vertical riser layout works.** Under sustained load on both cards neither went above 74 °C, the same
+  as one card alone, and the only active clock limit was the 250 W power cap.
+- **Don't trust PSU telemetry under tensor parallelism.** During the TP=2 agent runs the power supply's own
+  telemetry (Corsair HX1000i through the `corsair-psu` driver) reported up to 1,016 W, right at its rating.
+  A controlled check ([scripts/bench/power_transients.sh](../scripts/bench/power_transients.sh)) sampled
+  both GPUs' instantaneous power every 100 ms alongside the PSU reading:
+
+  | Load | Both GPUs, p50 / p90 / max | PSU-reported, p50 / p90 / max |
+  |---|---|---|
+  | TP=2, 16 long generations | 442 / 492 / 503 W | 594 / 650 / 706 W |
+  | PP=2, 16 long generations | 494 / 499 / 505 W | 658 / 692 / 720 W |
+  | TP=2, 8 coding agents | 411 / 461 / 506 W | **386** / 908 / 1,014 W |
+
+  Under the agent load the PSU's median reading is *below* what the two GPUs alone were drawing, which is
+  impossible for real power, while its peaks are 500 W above them. Prefill under TP alternates compute and
+  host-memory all-reduce every few milliseconds, and the PSU's sampling evidently aliases on that pattern.
+  A fully loaded CPU adds about 130 W at the PSU (measured with all 32 threads busy and the GPUs idle), so the
+  real peak is about 750 W. The 1,000 W PSU has headroom; its telemetry under this kind of load does not
+  measure it.
+
+### What to run
+
+For a 27B hybrid model on 48 GB Ampere cards over a consumer PCIe board:
+
+| Situation | Choice |
+|---|---|
+| One card, a few agents | One card serves about four busy coding agents before its 250K-token cache overflows. Past that, more agents make every agent slower |
+| Two cards, up to ~8 agents | **DP=2** behind sglang-router with `--balance-abs-threshold 1 --balance-rel-threshold 1.0`. Each replica keeps MTP, and one replica failing leaves the other serving |
+| Two cards, 8-16+ agents or long contexts | **PP=2**: the largest pool (974K tokens), the fastest prefill and the lowest TTFT under load, but only 23 tok/s per stream without MTP |
+| Two cards, one or two latency-sensitive agents, or 1M context | **TP=2**: 81 tok/s single stream with MTP; with `--max-mamba-cache-size 32` and YaRN, a 1.33M-token pool |
+| Any multi-GPU build | Check peer copies for correctness first. If they fail, set `NCCL_P2P_DISABLE=1` and `--disable-custom-all-reduce` |
+
+This server keeps the single-card deployment from §5. The second card is reserved for image, video and audio
+models, and the measurements above were taken for these notes.
+
+## 13. Operations
 
 - **Serving:** Docker Compose project `neuron` ([serve/compose.yaml](../serve/compose.yaml)) with
   `restart: unless-stopped` and log rotation. The API key is mounted as a file and read at container start, so it
@@ -394,24 +626,29 @@ below 2%.
   ready in about 4 minutes, verified end to end over the LAN including tool calling.
 - **Upgrades:** driver and kernel upgrades are manual: unhold, upgrade, reboot, re-hold.
 
-## 13. Limitations and what changes on Blackwell
+## 14. Limitations and what changes on Blackwell
 
 - On this card, single-stream decode tops out around 60 tok/s and prefill around 1,000 tok/s. Both are hardware
   limits (768 GB/s, no FP8 tensor cores), not tuning gaps.
-- 262K is the per-request maximum, but it uses the whole KV pool. Concurrent sessions share about 248K tokens.
+- 262K is the per-request maximum, but it uses the whole KV pool. Concurrent sessions share about 248K tokens,
+  which caps one card at about four busy coding agents (§12).
+- Two cards on a consumer board are limited by the chipset link and the broken peer-to-peer path. An NVLink
+  bridge (A6000 pairs support one) would remove most of TP's prefill penalty, at the price of mounting the cards
+  side by side. That trade was not made here, for cooling. Current GeForce and RTX PRO Blackwell cards no
+  longer offer NVLink at all.
 - The planned upgrade is an RTX PRO 6000 (96 GB, about 1.8 TB/s, native FP8/FP4) in the x16 slot, with an RTX
   PRO 4000 for display and auxiliary models. No tensor parallelism across the asymmetric pair is planned. It
   should bring native W8A8 FP8, 1M context with an FP8 KV cache, and well over 100 tok/s single stream with MTP.
 
-## 14. Reproduce
+## 15. Reproduce
 
 | Path | What |
 |---|---|
-| [serve/](../serve/) | Compose file and model switch script |
+| [serve/](../serve/) | Compose file, model switch script, and `bench-variant.sh` (every 1- and 2-GPU configuration in §12) |
 | [system/](../system/) | systemd units, persistence override, unattended-upgrades blacklist |
 | [scripts/quantize/](../scripts/quantize/) | Template-driven FP8 quantizer, checkpoint comparer, recipe probe |
 | [scripts/analysis/](../scripts/analysis/) | Abliteration SVD analysis |
-| [scripts/bench/](../scripts/bench/) | Speed bench, model comparison, power sweep, soak test and report |
+| [scripts/bench/](../scripts/bench/) | Speed bench, model comparison, power sweep, soak test and report; link test, coding-agent benchmark and report, long-context retrieval, two-GPU matrix runner, power transients |
 | [scripts/system/](../scripts/system/) | NVML fan-curve daemon, model download |
 | [scripts/figures/](../scripts/figures/) | Renders every figure from `results/` |
-| [results/](../results/) | Raw data behind every number in these notes (incl. `abliteration/` SVD outputs and recovered direction, `idle-power/`) |
+| [results/](../results/) | Raw data behind every number in these notes (incl. `abliteration/` SVD outputs and recovered direction, `idle-power/`, `dual-gpu/`) |

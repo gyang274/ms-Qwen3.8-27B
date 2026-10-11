@@ -1,0 +1,45 @@
+{
+ "peer_access": {
+  "0->1": true,
+  "1->0": true
+ },
+ "h2d_gpu0_GiBps": 2.663068799644153,
+ "d2h_gpu0_GiBps": 3.0399552678121315,
+ "h2d_gpu1_GiBps": 23.86401786250128,
+ "d2h_gpu1_GiBps": 24.150343111635355,
+ "p2p_0to1_correct": false,
+ "p2p_1to0_correct": false,
+ "nccl_version": "2.29.7",
+ "allreduce": [
+  {
+   "bytes": 10240,
+   "latency_us": 27.793425001618743,
+   "busbw_GiBps": 0.3431294690563348
+  },
+  {
+   "bytes": 40960,
+   "latency_us": 53.77660000021933,
+   "busbw_GiBps": 0.7093600684330065
+  },
+  {
+   "bytes": 163840,
+   "latency_us": 126.53039500037266,
+   "busbw_GiBps": 1.205938625454782
+  },
+  {
+   "bytes": 1048576,
+   "latency_us": 618.9801499886016,
+   "busbw_GiBps": 1.577695989149221
+  },
+  {
+   "bytes": 8388608,
+   "latency_us": 4685.234099997615,
+   "busbw_GiBps": 1.6674727096355713
+  },
+  {
+   "bytes": 83886080,
+   "latency_us": 46445.12764998581,
+   "busbw_GiBps": 1.682092481018811
+  }
+ ]
+}

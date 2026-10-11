@@ -1,0 +1,7 @@
+C=1 think=False per-stream avg 60.3 tok/s, aggregate 59.7 tok/s
+C=1 think=False per-stream avg 61.2 tok/s, aggregate 60.9 tok/s
+C=1 think=False per-stream avg 59.1 tok/s, aggregate 58.7 tok/s
+  prompt  49526  out    64  ttft  51.36s  decode   50.9 tok/s
+C=4 think=False per-stream avg 52.4 tok/s, aggregate 167.1 tok/s
+C=8 think=False per-stream avg 56.2 tok/s, aggregate 160.3 tok/s
+C=16 think=False per-stream avg 54.4 tok/s, aggregate 183.8 tok/s

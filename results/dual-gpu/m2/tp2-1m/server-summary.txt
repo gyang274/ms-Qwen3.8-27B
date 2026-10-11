@@ -1,0 +1,4 @@
+Engine startup timings (s): load_weight=8.72, kv_cache_allocation=0.60, scheduler_e2e=270.26, cuda_graph={prefill=235.19, decode=0.00, target_verify=6.11, draft_prefill=4.97, draft_decode=1.77, draft_extend=1.12}, tokenizer_e2e=277.34
+Input length (806731 tokens) exceeds the maximum allowed length (804537 tokens). Use a shorter input or enable --allow-auto-truncate., self.rid='c397930004b2459890f0808a75717edb'
+max_running_requests is capped to 28 by the mamba state cache (max_mamba_cache_size=144, 5 state slots per request). To raise it: increase --mamba-full-memory-ratio or --max-mamba-cache-size, or halve the state size with --mamba-ssm-dtype bfloat16.
+max_total_num_tokens=804543, chunked_prefill_size=8192, max_prefill_tokens=16384, max_running_requests=28, context_len=1000000, available_gpu_mem=0.95 GB

@@ -1,0 +1,2 @@
+Engine startup timings (s): load_weight=13.00, kv_cache_allocation=0.55, scheduler_e2e=213.04, cuda_graph={prefill=184.43, decode=0.00, target_verify=1.42, draft_prefill=4.38, draft_decode=0.82, draft_extend=0.75}, tokenizer_e2e=220.06
+max_total_num_tokens=249600, chunked_prefill_size=8192, max_prefill_tokens=16384, max_running_requests=4, context_len=262144, available_gpu_mem=2.14 GB

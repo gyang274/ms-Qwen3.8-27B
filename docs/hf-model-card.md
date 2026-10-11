@@ -86,6 +86,17 @@ The deployment notes give the memory flags that fit the full 262K context with 4
 card. The checkpoint uses the same format as the official FP8 release, so other engines that load
 `Qwen/Qwen3.8-27B-FP8` (for example vLLM) should load it the same way. Only SGLang was tested here.
 
+**Two GPUs and 1M context.** These were measured with the official FP8 checkpoint, which has the same format
+and loads through the same code path ([§12 of the notes](https://github.com/gyang274/ms-Qwen3.8-27B/blob/main/docs/deployment-notes.md)).
+
+- Two RTX A6000s with `--tp-size 2` decode at about 81 tok/s single stream with MTP.
+- With the Qwen card's YaRN override (factor 4), `--context-length 1000000` and `--max-mamba-cache-size 32`, the
+  KV pool holds 1.33M tokens. All 8 needles were found in a 992K-token prompt.
+- On consumer AMD boards, CUDA may report peer-to-peer access that the IOMMU silently drops. Test a peer copy
+  first, and if it fails use `NCCL_P2P_DISABLE=1` and `--disable-custom-all-reduce`.
+- For many concurrent coding agents, see the notes for data vs pipeline vs tensor parallelism and the
+  sglang-router settings that keep data parallelism from sending every agent to one replica.
+
 ## Provenance
 
 | | |
