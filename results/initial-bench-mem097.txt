@@ -1,0 +1,18 @@
+  prompt     36  out  1024  ttft   0.09s  decode   57.7 tok/s
+C=1 think=False per-stream avg 57.7 tok/s, aggregate 57.5 tok/s
+  prompt     36  out  1024  ttft   0.55s  decode   60.5 tok/s
+  prompt     41  out  1024  ttft   0.29s  decode   51.6 tok/s
+C=2 think=False per-stream avg 56.1 tok/s, aggregate 101.9 tok/s
+  prompt     36  out  1024  ttft   0.65s  decode   59.2 tok/s
+  prompt     41  out  1024  ttft   0.32s  decode   51.5 tok/s
+  prompt     36  out   876  ttft   0.65s  decode   55.6 tok/s
+  prompt     55  out   329  ttft   0.65s  decode   51.0 tok/s
+C=4 think=False per-stream avg 54.4 tok/s, aggregate 161.3 tok/s
+  prompt     76  out  2048  ttft   0.14s  decode   51.2 tok/s
+C=1 think=True per-stream avg 51.2 tok/s, aggregate 51.0 tok/s
+  prompt 133827  out   256  ttft 173.59s  decode   47.4 tok/s
+C=1 think=False per-stream avg 47.4 tok/s, aggregate 1.4 tok/s
+idle: 17.37 W, P8, 46029 MiB sglang-cpu: 1.36%
+[2026-10-09 02:01:29] Decode batch, #running-req: 1, #full token: 2041, full token usage: 0.01, mamba num: 4, mamba usage: 0.17, accept len: 2.85, accept rate: 0.62, cuda graph: True, gen throughput (token/s): 47.97, #queue-req: 0
+[2026-10-09 02:04:25] Decode batch, #running-req: 1, #full token: 133835, full token usage: 0.54, mamba num: 4, mamba usage: 0.17, accept len: 2.42, accept rate: 0.47, cuda graph: True, gen throughput (token/s): 0.55, #queue-req: 0
+[2026-10-09 02:04:28] Decode batch, #running-req: 1, #full token: 133976, full token usage: 0.54, mamba num: 4, mamba usage: 0.17, accept len: 3.52, accept rate: 0.84, cuda graph: True, gen throughput (token/s): 47.95, #queue-req: 0

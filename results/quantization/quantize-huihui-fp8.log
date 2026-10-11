@@ -1,0 +1,19 @@
+model-00001-of-00018.safetensors: 417 tensors, max rel err so far 2.6550%
+model-00002-of-00018.safetensors: 72 tensors, max rel err so far 2.6560%
+model-00003-of-00018.safetensors: 1 tensors, max rel err so far 2.6560%
+model-00004-of-00018.safetensors: 101 tensors, max rel err so far 2.6565%
+model-00005-of-00018.safetensors: 55 tensors, max rel err so far 2.6565%
+model-00006-of-00018.safetensors: 109 tensors, max rel err so far 2.6573%
+model-00007-of-00018.safetensors: 47 tensors, max rel err so far 2.6573%
+model-00008-of-00018.safetensors: 109 tensors, max rel err so far 2.6577%
+model-00009-of-00018.safetensors: 47 tensors, max rel err so far 2.6581%
+model-00010-of-00018.safetensors: 109 tensors, max rel err so far 2.6581%
+model-00011-of-00018.safetensors: 47 tensors, max rel err so far 2.6581%
+model-00012-of-00018.safetensors: 109 tensors, max rel err so far 2.6581%
+model-00013-of-00018.safetensors: 47 tensors, max rel err so far 2.6581%
+model-00014-of-00018.safetensors: 109 tensors, max rel err so far 2.6581%
+model-00015-of-00018.safetensors: 47 tensors, max rel err so far 2.6581%
+model-00016-of-00018.safetensors: 110 tensors, max rel err so far 2.6581%
+model-00017-of-00018.safetensors: 47 tensors, max rel err so far 2.6581%
+model-00018-of-00018.safetensors: 23 tensors, max rel err so far 2.6581%
+done: 1606 tensors, 28.75 GiB, max relative weight error 2.6581%

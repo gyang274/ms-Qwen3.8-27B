@@ -1,0 +1,29 @@
+{
+  "model": "qwen3.8-27b",
+  "humaneval": {
+    "n": 164,
+    "seconds": 210.1,
+    "gen_tokens": 43000,
+    "agg_tok_s": 204.7
+  },
+  "gsm8k": {
+    "n": 200,
+    "seconds": 350.8,
+    "gen_tokens": 76594,
+    "agg_tok_s": 218.3,
+    "accuracy": 0.975
+  },
+  "refusal": {
+    "n": 15,
+    "seconds": 53.5,
+    "gen_tokens": 8067,
+    "agg_tok_s": 150.7,
+    "refused": 2
+  },
+  "chat": {
+    "n": 4,
+    "seconds": 18.0,
+    "gen_tokens": 1737,
+    "agg_tok_s": 96.5
+  }
+}

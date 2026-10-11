@@ -1,0 +1,15 @@
+[Unit]
+Description=Custom NVIDIA GPU fan curve with fan health check (/dd/neuron/scripts/gpu_fan_curve.py)
+After=nvidia-persistenced.service
+Wants=nvidia-persistenced.service
+RequiresMountsFor=/dd/neuron
+
+[Service]
+Type=simple
+ExecStart=/dd/neuron/.venv-tools/bin/python -I /dd/neuron/scripts/gpu_fan_curve.py --curve 45:30,55:40,65:55,72:70,78:85,82:100
+ExecStopPost=/dd/neuron/.venv-tools/bin/python -I /dd/neuron/scripts/gpu_fan_curve.py --reset
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

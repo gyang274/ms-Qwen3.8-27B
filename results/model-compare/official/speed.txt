@@ -1,0 +1,7 @@
+  prompt     55  out  1024  ttft   0.10s  decode   59.7 tok/s
+C=1 think=False per-stream avg 59.7 tok/s, aggregate 59.5 tok/s
+  prompt     55  out  1024  ttft   0.41s  decode   61.4 tok/s
+  prompt     60  out  1024  ttft   0.41s  decode   50.0 tok/s
+  prompt     55  out   740  ttft   0.41s  decode   56.6 tok/s
+  prompt     74  out   343  ttft   0.33s  decode   47.0 tok/s
+C=4 think=False per-stream avg 53.7 tok/s, aggregate 150.0 tok/s

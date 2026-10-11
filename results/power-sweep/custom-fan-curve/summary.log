@@ -1,0 +1,19 @@
+=== power limit 300 W ===
+decode (C=4):   per-run aggregate avg 0.0 tok/s over 7 runs
+decode (C=1):   C=1 think=False per-stream avg 60.4 tok/s, aggregate 60.1 tok/s
+prefill (38K):    prompt  38646  out    16  ttft  38.51s  decode   39.6 tok/s
+steady state (last 60 s): temp 78 C, fan 84 %, power 299 W, sm 1782 MHz
+max temp: 78 C
+=== power limit 250 W ===
+decode (C=4):   per-run aggregate avg 0.0 tok/s over 7 runs
+decode (C=1):   C=1 think=False per-stream avg 61.1 tok/s, aggregate 60.8 tok/s
+prefill (38K):    prompt  38646  out    16  ttft  39.05s  decode   39.1 tok/s
+steady state (last 60 s): temp 74 C, fan 75 %, power 249 W, sm 1618 MHz
+max temp: 75 C
+=== power limit 220 W ===
+decode (C=4):   per-run aggregate avg 0.0 tok/s over 7 runs
+decode (C=1):   C=1 think=False per-stream avg 59.4 tok/s, aggregate 59.1 tok/s
+prefill (38K):    prompt  38646  out    16  ttft  42.80s  decode   46.1 tok/s
+steady state (last 60 s): temp 72 C, fan 70 %, power 220 W, sm 1508 MHz
+max temp: 73 C
+restored 300 W

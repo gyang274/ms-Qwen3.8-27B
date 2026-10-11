@@ -1,0 +1,14 @@
+{
+  "description": "Fraction of FP8 bytes identical to the official Qwen/Qwen3.8-27B-FP8 checkpoint when re-quantizing an unmodified BF16 tensor with candidate block-128 recipes (scale match was 100% for all).",
+  "tensors": ["model.language_model.layers.0.mlp.down_proj.weight", "model.language_model.layers.3.self_attn.q_proj.weight"],
+  "recipes": [
+    {"id": "A", "label": "bf16-rounded scale, divide", "match": [0.984461, 0.983438]},
+    {"id": "B", "label": "fp32 scale = amax/448, divide", "match": [0.999107, 0.999207]},
+    {"id": "C", "label": "fp32 multiply by 448/amax", "match": [0.998864, 0.998899]},
+    {"id": "D", "label": "bf16-rounded scale, multiply by reciprocal", "match": [0.984283, 0.983317]},
+    {"id": "E", "label": "all-bf16 arithmetic", "match": [0.970612, 0.970133]},
+    {"id": "F", "label": "bf16 scale rounded up (no clipping)", "match": [0.984461, 0.983438]},
+    {"id": "final", "label": "fp32 scale = amax * (1/448), divide (CPU) / B on CUDA", "match": [1.0, null]}
+  ],
+  "notes": "CUDA 'divide' (B) also gives 100% on layer 0 down_proj; CPU 'divide' differs by 1 ULP on 0.09% of elements. Final recipe used: scale = amax * (1/448) in fp32, q = w / scale, scale stored as bf16."
+}

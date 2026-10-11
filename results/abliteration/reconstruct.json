@@ -1,0 +1,786 @@
+{
+ "summary": {
+  "alpha_1": {
+   "bit_exact_min": 0.44663089513778687,
+   "bit_exact_mean": 0.46562243614877974,
+   "rel_error_max": 0.2583951950073242
+  },
+  "alpha_1.3": {
+   "bit_exact_min": 0.9140228033065796,
+   "bit_exact_mean": 0.9187638316835676,
+   "rel_error_max": 0.03931673988699913
+  }
+ },
+ "tensors": [
+  {
+   "tensor": "model.language_model.layers.17.linear_attn.out_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.4483011066913605,
+    "rel_error_vs_dW": 0.2514289319515228
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9168167114257812,
+    "rel_error_vs_dW": 0.03434839844703674
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.17.mlp.down_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.4614580571651459,
+    "rel_error_vs_dW": 0.2545301914215088
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9194282293319702,
+    "rel_error_vs_dW": 0.03695105016231537
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.18.linear_attn.out_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.44688722491264343,
+    "rel_error_vs_dW": 0.25205326080322266
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9183128476142883,
+    "rel_error_vs_dW": 0.03433816507458687
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.18.mlp.down_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.4619773328304291,
+    "rel_error_vs_dW": 0.2544543743133545
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9187563061714172,
+    "rel_error_vs_dW": 0.0370170995593071
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.19.mlp.down_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.46651825308799744,
+    "rel_error_vs_dW": 0.2567176818847656
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9194708466529846,
+    "rel_error_vs_dW": 0.03847624361515045
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.19.self_attn.o_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.4560025632381439,
+    "rel_error_vs_dW": 0.25338077545166016
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9185672998428345,
+    "rel_error_vs_dW": 0.03558386489748955
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.20.linear_attn.out_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.458673357963562,
+    "rel_error_vs_dW": 0.254596471786499
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9185100197792053,
+    "rel_error_vs_dW": 0.03659965097904205
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.20.mlp.down_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.4706869125366211,
+    "rel_error_vs_dW": 0.25643137097358704
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9196222424507141,
+    "rel_error_vs_dW": 0.038339026272296906
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.21.linear_attn.out_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.4650329649448395,
+    "rel_error_vs_dW": 0.2559148669242859
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9196551442146301,
+    "rel_error_vs_dW": 0.03727131336927414
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.21.mlp.down_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.47188273072242737,
+    "rel_error_vs_dW": 0.2568638026714325
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9201615452766418,
+    "rel_error_vs_dW": 0.03849566727876663
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.22.linear_attn.out_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.46420714259147644,
+    "rel_error_vs_dW": 0.25718820095062256
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9203028082847595,
+    "rel_error_vs_dW": 0.03798307850956917
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.22.mlp.down_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.4728085696697235,
+    "rel_error_vs_dW": 0.2571190893650055
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9201726317405701,
+    "rel_error_vs_dW": 0.03872453793883324
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.23.mlp.down_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.4689248502254486,
+    "rel_error_vs_dW": 0.2564043402671814
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9201904535293579,
+    "rel_error_vs_dW": 0.03801703080534935
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.23.self_attn.o_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.46407079696655273,
+    "rel_error_vs_dW": 0.25490260124206543
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.919000506401062,
+    "rel_error_vs_dW": 0.03671671077609062
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.24.linear_attn.out_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.47057873010635376,
+    "rel_error_vs_dW": 0.2563270628452301
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.920269787311554,
+    "rel_error_vs_dW": 0.03753935545682907
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.24.mlp.down_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.4699517786502838,
+    "rel_error_vs_dW": 0.25617191195487976
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9192845821380615,
+    "rel_error_vs_dW": 0.03811017796397209
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.25.linear_attn.out_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.46733659505844116,
+    "rel_error_vs_dW": 0.25609084963798523
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9200136661529541,
+    "rel_error_vs_dW": 0.0373896025121212
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.25.mlp.down_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.4703332483768463,
+    "rel_error_vs_dW": 0.25638341903686523
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9191124439239502,
+    "rel_error_vs_dW": 0.038171201944351196
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.26.linear_attn.out_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.4580974280834198,
+    "rel_error_vs_dW": 0.25474390387535095
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9179095029830933,
+    "rel_error_vs_dW": 0.036682840436697006
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.26.mlp.down_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.463623583316803,
+    "rel_error_vs_dW": 0.25475791096687317
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9187694787979126,
+    "rel_error_vs_dW": 0.03693864494562149
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.27.mlp.down_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.46108901500701904,
+    "rel_error_vs_dW": 0.25437676906585693
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9185242652893066,
+    "rel_error_vs_dW": 0.03662392497062683
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.27.self_attn.o_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.46952125430107117,
+    "rel_error_vs_dW": 0.2559375762939453
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9184666275978088,
+    "rel_error_vs_dW": 0.037268638610839844
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.28.linear_attn.out_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.45793211460113525,
+    "rel_error_vs_dW": 0.2538684904575348
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9165481328964233,
+    "rel_error_vs_dW": 0.03601711243391037
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.28.mlp.down_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.4613761305809021,
+    "rel_error_vs_dW": 0.2545876204967499
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9182325601577759,
+    "rel_error_vs_dW": 0.036780066788196564
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.29.linear_attn.out_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.46032729744911194,
+    "rel_error_vs_dW": 0.2553583085536957
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9167831540107727,
+    "rel_error_vs_dW": 0.036934684962034225
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.29.mlp.down_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.46417540311813354,
+    "rel_error_vs_dW": 0.2552552819252014
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9175470471382141,
+    "rel_error_vs_dW": 0.037513647228479385
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.30.linear_attn.out_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.46435627341270447,
+    "rel_error_vs_dW": 0.25572192668914795
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9168980717658997,
+    "rel_error_vs_dW": 0.03738922253251076
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.30.mlp.down_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.4639042615890503,
+    "rel_error_vs_dW": 0.2545876204967499
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.918045699596405,
+    "rel_error_vs_dW": 0.0369456447660923
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.31.mlp.down_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.458697646856308,
+    "rel_error_vs_dW": 0.25435009598731995
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9176800847053528,
+    "rel_error_vs_dW": 0.03667010739445686
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.31.self_attn.o_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.4550873935222626,
+    "rel_error_vs_dW": 0.25386667251586914
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9161846041679382,
+    "rel_error_vs_dW": 0.035887300968170166
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.32.linear_attn.out_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.44663089513778687,
+    "rel_error_vs_dW": 0.2513054311275482
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9140228033065796,
+    "rel_error_vs_dW": 0.0343811996281147
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.32.mlp.down_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.45906803011894226,
+    "rel_error_vs_dW": 0.25373631715774536
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9171220064163208,
+    "rel_error_vs_dW": 0.03639880567789078
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.33.linear_attn.out_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.4502391517162323,
+    "rel_error_vs_dW": 0.24972207844257355
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9142357707023621,
+    "rel_error_vs_dW": 0.033255062997341156
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.33.mlp.down_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.4588000178337097,
+    "rel_error_vs_dW": 0.25286462903022766
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9171587824821472,
+    "rel_error_vs_dW": 0.03575293347239494
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.34.linear_attn.out_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.4535421133041382,
+    "rel_error_vs_dW": 0.2504672408103943
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.916268527507782,
+    "rel_error_vs_dW": 0.033577293157577515
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.34.mlp.down_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.470848947763443,
+    "rel_error_vs_dW": 0.25437068939208984
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9188650846481323,
+    "rel_error_vs_dW": 0.03676021099090576
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.35.mlp.down_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.4663439691066742,
+    "rel_error_vs_dW": 0.25504887104034424
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.917850911617279,
+    "rel_error_vs_dW": 0.037291985005140305
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.35.self_attn.o_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.4620281755924225,
+    "rel_error_vs_dW": 0.2530062794685364
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9166246056556702,
+    "rel_error_vs_dW": 0.035611823201179504
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.36.linear_attn.out_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.46465227007865906,
+    "rel_error_vs_dW": 0.25539156794548035
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9184856414794922,
+    "rel_error_vs_dW": 0.03710057958960533
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.36.mlp.down_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.47157856822013855,
+    "rel_error_vs_dW": 0.2565755844116211
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9186213612556458,
+    "rel_error_vs_dW": 0.038413405418395996
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.37.linear_attn.out_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.4739390015602112,
+    "rel_error_vs_dW": 0.25728803873062134
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9202998876571655,
+    "rel_error_vs_dW": 0.03814312443137169
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.37.mlp.down_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.4710862636566162,
+    "rel_error_vs_dW": 0.2573111653327942
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9195976853370667,
+    "rel_error_vs_dW": 0.03876923397183418
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.38.linear_attn.out_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.4746488034725189,
+    "rel_error_vs_dW": 0.2573069930076599
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9213806986808777,
+    "rel_error_vs_dW": 0.038190487772226334
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.38.mlp.down_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.4756258726119995,
+    "rel_error_vs_dW": 0.2578943371772766
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9199045300483704,
+    "rel_error_vs_dW": 0.03931673988699913
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.39.mlp.down_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.47424882650375366,
+    "rel_error_vs_dW": 0.257510244846344
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9200881719589233,
+    "rel_error_vs_dW": 0.03896252065896988
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.39.self_attn.o_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.46637633442878723,
+    "rel_error_vs_dW": 0.2563821077346802
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9185079336166382,
+    "rel_error_vs_dW": 0.03796248883008957
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.40.linear_attn.out_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.47992274165153503,
+    "rel_error_vs_dW": 0.2583951950073242
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9206270575523376,
+    "rel_error_vs_dW": 0.039263200014829636
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.40.mlp.down_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.4745537340641022,
+    "rel_error_vs_dW": 0.25790947675704956
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9199042916297913,
+    "rel_error_vs_dW": 0.03921503201127052
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.41.linear_attn.out_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.47458595037460327,
+    "rel_error_vs_dW": 0.2579205632209778
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9207112789154053,
+    "rel_error_vs_dW": 0.038560133427381516
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.41.mlp.down_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.47216665744781494,
+    "rel_error_vs_dW": 0.25687485933303833
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.919966459274292,
+    "rel_error_vs_dW": 0.03849410265684128
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.42.linear_attn.out_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.46488723158836365,
+    "rel_error_vs_dW": 0.25667551159858704
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.920759916305542,
+    "rel_error_vs_dW": 0.0374329537153244
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.42.mlp.down_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.4688531756401062,
+    "rel_error_vs_dW": 0.2560737431049347
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.919829249382019,
+    "rel_error_vs_dW": 0.03792055696249008
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.43.mlp.down_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.46988341212272644,
+    "rel_error_vs_dW": 0.25638729333877563
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9198381304740906,
+    "rel_error_vs_dW": 0.03801953047513962
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.43.self_attn.o_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.46360063552856445,
+    "rel_error_vs_dW": 0.25575506687164307
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9175126552581787,
+    "rel_error_vs_dW": 0.037336286157369614
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.44.linear_attn.out_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.46450668573379517,
+    "rel_error_vs_dW": 0.25619104504585266
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9190841913223267,
+    "rel_error_vs_dW": 0.03732813149690628
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.44.mlp.down_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.4687148630619049,
+    "rel_error_vs_dW": 0.2565222680568695
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9192056059837341,
+    "rel_error_vs_dW": 0.03821851685643196
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.45.linear_attn.out_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.4659455418586731,
+    "rel_error_vs_dW": 0.25583550333976746
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9187943339347839,
+    "rel_error_vs_dW": 0.037323664873838425
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.45.mlp.down_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.4668547809123993,
+    "rel_error_vs_dW": 0.25601518154144287
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9191986322402954,
+    "rel_error_vs_dW": 0.037835173308849335
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.46.linear_attn.out_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.46437981724739075,
+    "rel_error_vs_dW": 0.25524231791496277
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9176053404808044,
+    "rel_error_vs_dW": 0.037133872509002686
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.46.mlp.down_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.46901026368141174,
+    "rel_error_vs_dW": 0.25595906376838684
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9192522764205933,
+    "rel_error_vs_dW": 0.03792761638760567
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.47.mlp.down_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.4689352512359619,
+    "rel_error_vs_dW": 0.25603580474853516
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.919941782951355,
+    "rel_error_vs_dW": 0.037769678980112076
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.47.self_attn.o_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.46208810806274414,
+    "rel_error_vs_dW": 0.2556425631046295
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9188427329063416,
+    "rel_error_vs_dW": 0.03702503815293312
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.48.linear_attn.out_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.4637124240398407,
+    "rel_error_vs_dW": 0.25361359119415283
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9180090427398682,
+    "rel_error_vs_dW": 0.035883158445358276
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.48.mlp.down_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.47187894582748413,
+    "rel_error_vs_dW": 0.25649136304855347
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9195205569267273,
+    "rel_error_vs_dW": 0.03837057203054428
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.49.linear_attn.out_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.46620699763298035,
+    "rel_error_vs_dW": 0.2547988295555115
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9176529049873352,
+    "rel_error_vs_dW": 0.03707659989595413
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.49.mlp.down_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.4705926477909088,
+    "rel_error_vs_dW": 0.25658518075942993
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9196633100509644,
+    "rel_error_vs_dW": 0.038245461881160736
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.50.linear_attn.out_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.4664314091205597,
+    "rel_error_vs_dW": 0.2540327310562134
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9183218479156494,
+    "rel_error_vs_dW": 0.03632105886936188
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.50.mlp.down_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.4757806360721588,
+    "rel_error_vs_dW": 0.25746652483940125
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9203910231590271,
+    "rel_error_vs_dW": 0.03884170204401016
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.51.mlp.down_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.47218793630599976,
+    "rel_error_vs_dW": 0.25783640146255493
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9203784465789795,
+    "rel_error_vs_dW": 0.03895922377705574
+   }
+  },
+  {
+   "tensor": "model.language_model.layers.51.self_attn.o_proj.weight",
+   "alpha_1": {
+    "bit_exact": 0.4744134247303009,
+    "rel_error_vs_dW": 0.25814199447631836
+   },
+   "alpha_1.3": {
+    "bit_exact": 0.9201854467391968,
+    "rel_error_vs_dW": 0.038846325129270554
+   }
+  }
+ ]
+}

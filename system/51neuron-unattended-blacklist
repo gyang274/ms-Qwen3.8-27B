@@ -1,0 +1,10 @@
+// neuron (/dd/neuron): never auto-upgrade the GPU driver stack or kernel; upgrade them manually + reboot.
+Unattended-Upgrade::Package-Blacklist {
+    "nvidia-";
+    "libnvidia-";
+    "xserver-xorg-video-nvidia";
+    "linux-image-";
+    "linux-headers-";
+    "linux-modules-";
+    "linux-generic";
+};

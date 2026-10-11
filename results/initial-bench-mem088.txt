@@ -1,0 +1,10 @@
+  prompt     36  out  1024  ttft   0.09s  decode   59.9 tok/s
+C=1 think=False per-stream avg 59.9 tok/s, aggregate 59.6 tok/s
+  prompt     36  out  1024  ttft   0.09s  decode   57.8 tok/s
+C=1 think=False per-stream avg 57.8 tok/s, aggregate 57.5 tok/s
+  prompt     36  out  1024  ttft   0.15s  decode   57.6 tok/s
+  prompt     41  out  1024  ttft   0.53s  decode   49.9 tok/s
+C=2 think=False per-stream avg 53.7 tok/s, aggregate 97.3 tok/s
+  prompt  38627  out   256  ttft  38.53s  decode   54.0 tok/s
+C=1 think=False per-stream avg 54.0 tok/s, aggregate 5.9 tok/s
+289.97 W, P2, 1695 MHz
