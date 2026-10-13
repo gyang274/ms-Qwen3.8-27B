@@ -22,8 +22,10 @@ services:
       resources:
         reservations:
           devices:
+            # Pinned by UUID: GPU on PCIEX16_2 (chipset Gen3 x4, bus 04:00.0). Decode needs almost no PCIe
+            # bandwidth; the CPU Gen4 x16 card (bus 08:00.0, GPU-09aeaae4-...) is left for ComfyUI model swaps.
             - driver: nvidia
-              count: all
+              device_ids: ["GPU-a59b6394-c612-21dd-efab-3fa4fb00d4c9"]
               capabilities: [gpu]
     healthcheck:
       test: ["CMD", "curl", "-sf", "http://localhost:30000/health"]
@@ -34,6 +36,9 @@ services:
     logging:
       driver: json-file
       options: {max-size: "50m", max-file: "5"}
+    # --image-processor-backend pil: image preprocessing on the CPU. The default fast processor resizes images
+    # on this GPU, where mem-fraction 0.97 leaves ~20 MiB free, so a screenshot-sized image failed with CUDA OOM
+    # (HTTP 500, and every later turn of that conversation too, since the image stays in the history).
     command:
       - bash
       - -c
@@ -58,3 +63,4 @@ services:
         --enable-linear-replayssm-spec
         --sleep-on-idle
         --enable-metrics
+        --image-processor-backend pil

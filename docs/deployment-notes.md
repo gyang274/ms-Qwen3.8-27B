@@ -625,6 +625,12 @@ models, and the measurements above were taken for these notes.
   [gpu-fan-curve.service](../system/gpu-fan-curve.service), then Docker, then SGLang. After a reboot the API is
   ready in about 4 minutes, verified end to end over the LAN including tool calling.
 - **Upgrades:** driver and kernel upgrades are manual: unhold, upgrade, reboot, re-hold.
+- **Images on a full GPU:** `--image-processor-backend pil`. SGLang's default fast image processor resizes
+  images in the HTTP process *on the scheduler's GPU*. With `--mem-fraction-static 0.97` only ~20 MiB is left,
+  so the first screenshot-sized image from a coding agent (2560×1440) failed with CUDA OOM and HTTP 500, and
+  so did every later turn of that conversation, since the image stays in the history. The soak test missed it
+  because its test image was 64×64. With the PIL backend the resize runs on the CPU: a 2560×1440 image now takes
+  5.9 s end to end (3,621 prompt tokens) and a 3840×2160 one 17.3 s, with the KV pool unchanged.
 
 ## 14. Limitations and what changes on Blackwell
 
