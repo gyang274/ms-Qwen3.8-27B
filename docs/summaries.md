@@ -48,7 +48,7 @@ and I still use them every day. A local model earns its place for other reasons:
 • Responsibility. I once built a production pipeline on a tech giant's speech synthesis service. One update made
   it break sentences in the wrong places. That pipeline was our product, and our business depended on it,
   but to the provider our revenue was a rounding error. When a dependency matters that much to you and that little
-  to its owner, a service you run yourself is what saves you.
+  to its owner, owning the service is how you save yourself.
 
 What I learned building one:
 • Older hardware goes further than you think. One five-year-old 48 GB RTX A6000 serves Qwen3.8-27B in FP8 at
