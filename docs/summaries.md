@@ -30,3 +30,37 @@ What it took:
 
 Notes, scripts and raw data: github.com/gyang274/ms-Qwen3.8-27B
 Model: huggingface.co/gyang274/Huihui-Qwen3.8-27B-abliterated-FP8
+
+## Short post (motivation)
+
+Hosting an LLM at home was never about competing with Anthropic or OpenAI. Their frontier models are better,
+and I still use them every day. A local model earns its place for other reasons:
+
+• Privacy. Some data must never leave the building. Sometimes the law requires it, as with patient records in
+  healthcare. Sometimes you learn it the hard way. A mathematician who kept every draft of an open-problem
+  proof in a cloud coding tool had to ask the provider whether its model had seen them, and got no answer
+  about training [1]. A popular coding tool silently uploaded snapshots of users' local repositories, full Git
+  history included, until a developer caught it [2].
+• Focus. Once I stopped counting tokens, I stopped asking how to solve a problem on a tight budget and started
+  asking which problem is worth solving. The second question matters far more.
+• Freedom. Security-related prompts are refused more and more often. That is a reasonable default for a public
+  service, and a daily obstacle when cybersecurity is your industry.
+• Responsibility. I once built a production pipeline on a tech giant's speech synthesis service. One update made
+  it break sentences in the wrong places. That pipeline was our product, and our business depended on it,
+  but to the provider our revenue was a rounding error. When a dependency matters that much to you and that little
+  to its owner, a service you run yourself is what saves you.
+
+What I learned building one:
+• Older hardware goes further than you think. One five-year-old 48 GB RTX A6000 serves Qwen3.8-27B in FP8 at
+  ~60 tok/s with its full native 262K context, and two of them hold a full 1M-token context.
+• For coding agents, the KV cache is the real budget, not decode speed. One card serves about four busy agents
+  before its cache overflows and every agent slows down.
+• Always-on means testing the unglamorous parts. A 10-hour soak test found a health check that kept an idle GPU
+  at 73 W instead of 7 W, and a second GPU revealed a peer-to-peer link that every tool reported as working
+  while it silently dropped every write.
+
+Notes, scripts and raw data: github.com/gyang274/ms-Qwen3.8-27B
+Model: huggingface.co/gyang274/Huihui-Qwen3.8-27B-abliterated-FP8
+
+[1] cims.nyu.edu/~tristanb/statement.pdf
+[2] thenextweb.com/news/zai-zcode-open-source-commit-history-security-assessment
